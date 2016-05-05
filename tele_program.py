@@ -23,26 +23,29 @@ groupid=-133850677
 mahanid=107074443
 secretgroup=-146263017
 v02=-117578537
-theid=v02
-leader=0
+final01=-130868018
+theid=final01
+Locus=0
 concern=0
 
-errortext="I do'n't know who the leader is.  I can't realize whether you are packed with others or\
- not."+"\n"+"Leader of the pack is whose location i will be using as a cordination.to specify the leader he/she would use the command:'Tobot: I am the leader'.\
+errortext="I do'n't know who the Locus is.  I can't realize whether you are packed with others or\
+ not."+"\n"+"Locus of the pack is whose location i will be using as a cordination.to specify the Locus he/she would use the command:'Locus'.\
 "+"\n"+"Then I will search for his/her location if it's also available here. I will set it up and you're all ready to go."
 
 
-welcome="Hello, they call me the packer. 'Pack' is an old unit superior to the crowd. It means a small group of people gathered together for a purpose.\
-"+"\n"+"Please specify one person as the leader using the command 'Tobot: I am the leader'."
-errwelcome="Please specify one person as the leader using the command 'Tobot: I am the leader'."
+welcome="Hello, This is the packer prototype v 0.2. 'Pack' is an old unit superior to the crowd and refering to a small group of \
+people gathered together for a purpose."+"\n"
+start="The first step is to specify a locus. I constatnly check if members of your pack are close enough to him/her.Use the command 'locus' to specfy the locus"
 
-multileader= "Your pack already has a leader. If you want to cancel his leadership, he/she has to send me 'Tobot: not leader anymore'"
+errwelcome="Please specify one person as the Locus using the command 'Locus'."
 
-invitationtxt="Now your pack has a leader and a concern (what connects you to other packs). Please send out your locations."+"\n"+"Sometimes you have to \
+multiLocus= "Your pack already has a Locus. If you want to cancel his Locusship, he/she has to send me 'Tobot: not Locus anymore'"
+
+invitationtxt="Now your pack has a Locus and a concern (what connects you to other packs). Please send out your locations."+"\n"+"Sometimes you have to \
 wait for some second untill your location gets more accurate"
 
-concerninvitation="Now your pack has a leader. Please tell me why do you want to construct a pack? In this version of me you can only specify a cocern \
-from the preset concern list."+"\n"+" Please do so using the command 'Tobot: give me the concern list'."
+concerninvitation="Now your pack has a Locus. Please tell me why do you want to construct a pack? In this version of me you can only specify a cocern \
+from the preset concern list."+"\n"+" Please do so using the command 'concern list'."
 
 report="test"
 
@@ -59,17 +62,19 @@ B=True
 while 1:
 	last_m_id=message_id(-1)
 	location_dict={}
-	while leader==0 or concern==0:
+	while Locus==0 or concern==0:
 		#the first time after code is run
 		if A==False:
 			send_txt(theid, welcome)
+			time.sleep(1)
+			send_txt(theid, start)
 			A=True
 
-		time.sleep(5)
+		time.sleep(1)
 		print "main while"
-		# who is leader
+		# who is Locus
 		# a new message should be processed
-		if last_m_id!=message_id(-1) and chattype(-1)=='group':
+		if last_m_id!=message_id(-1) and chattype(-1)=='group'and group_id(-1)==theid:
 			index=len(all_pack())-1
 			tmp=pack(index)
 			last_m_id=message_id(-1)
@@ -78,17 +83,18 @@ while 1:
 			if 'text' in tmp['message']:
 				tmp_txt=text(index)
 
-			#check if it's a message to define or change the leader
-				if tmp_txt.lower()=="tobot: i am the leader":
-					leader=sender_fname(index)
+			#check if it's a message to define or change the Locus
+				if tmp_txt.lower()=="locus":
+					Locus=sender_fname(index)
 					send_txt(theid, concerninvitation)
 					all_locations_dict={}
-					print "leader defined"
+					print "Locus defined"
 					last_m_id=message_id(-1)
-				elif tmp_txt.lower()=="tobot: give me the concern list":
+				elif tmp_txt.lower()=="concern list":
 					custom_keyboard(theid,1)
 					time.sleep(0.5)
-				elif  tmp_txt=="ICantBreath" or tmp_txt=="BlackLivesMatter" or tmp_txt=='AmINext' or tmp_txt=='RefugeesWelcome':
+				elif  tmp_txt=="ICantBreath" or tmp_txt=="BlackLivesMatter" or tmp_txt=='AmINext' or tmp_txt=='\
+				RefugeesWelcome' or tmp_txt=='Irhal' or tmp_txt=='WhereIsMyVote' or "StopTheWar" or tmp_txt=='Occupy':
 					custom_keyboard(theid,0)
 					time.sleep(0.5)
 					concern=tmp_txt
@@ -97,11 +103,11 @@ while 1:
 					
 
 				else:
-					if leader!=0 and concern==0:
-						send_txt(theid, "I know the leader but I am lacking your concern")
+					if Locus!=0 and concern==0:
+						send_txt(theid, "I know the Locus but I am lacking your concern")
 						print "no concern yet"
-					elif leader==0 and concern!=0:
-						send_txt(theid, "I understand your concern but i have to know who the pack leader is")
+					elif Locus==0 and concern!=0:
+						send_txt(theid, "I understand your concern but i have to know who the pack Locus is")
 						print "no concern yet"
 					else:
 						send_txt(theid, "Try again, this was not a known command for me."+"\n"+errwelcome+"\n"+leave)
@@ -109,44 +115,45 @@ while 1:
 					#break	
 			else:
 				send_txt(theid, "Try again, this was not a known message format for me."+"\n"+errwelcome+"\n"+leave)
-				print "no leader defined"
+				print "no Locus defined"
 							
-	yes_list=[]
+	
 	no_list=[]
-	while leader!=0 and concern!=0:
+	while Locus!=0 and concern!=0:
 
+		yes_list=[Locus]
 		#if a location arrived	
-		print "leader loop"
-		time.sleep(5)
+		print "Locus loop"
+		time.sleep(1)
 
 		if 'location' in pack(-1)['message'] and last_m_id!=message_id(-1):
 			index=len(all_pack())-1
 			tmp=pack(index)
 			last_m_id=message_id(-1)
 
-			#if it's the first location was the leader
-			if len(all_locations_dict)==0 and sender_fname(index)==leader:
+			#if it's the first location was the Locus
+			if len(all_locations_dict)==0 and sender_fname(index)==Locus:
 
 				send_txt(theid, "okay "+sender_fname(index)+". I got it. Thanks")
 
 				tmp_location_dict=location_dictionary_maker(sender_fname(index),loc_long(index),loc_lat(index),message_id(index))
 				all_locations_dict=tmp_location_dict
 
-				leader_long=loc_long(index)
-				leader_lat=loc_lat(index)
+				Locus_long=loc_long(index)
+				Locus_lat=loc_lat(index)
 				B=True
 
 				print "location got"
 				C=False
 
-			#if it's the first location was not the leader
-			elif len(all_locations_dict)==0 and sender_fname(index)!=leader:
+			#if it's the first location was not the Locus
+			elif len(all_locations_dict)==0 and sender_fname(index)!=Locus:
 
-				send_txt(theid, sender_fname(index)+", "+"you are not defined as the leader. Fist, I need to know where "+leader+" is.")
+				send_txt(theid, sender_fname(index)+", "+"you are not defined as the Locus. Fist, I need to know where "+Locus+" is.")
 
 				B=True
 
-				print "not the leader"
+				print "not the Locus"
 				
 
 			#if not the first location
@@ -194,33 +201,48 @@ while 1:
 			last_m_id=message_id(-1)
 
 			send_txt(theid, "For Now I am just waiting for locations. Please send your location")	
-			print "when leader not location"
+			print "when Locus not location"
 			
 		if C==False and len(all_locations_dict)>1:
 
+			print "in dictionary"
+
 			for key in all_locations_dict:
+				print "for"
 				long2=all_locations_dict[key]['long']
 				lat2=all_locations_dict[key]['lat']
 				name=all_locations_dict[key]['name']
-				distance=haversine(leader_long, leader_lat, long2, lat2)
-				if distance !=0 and distance < 0.02:
+				distance=haversine(Locus_long, Locus_lat, long2, lat2)
+				#if distance !=0 and distance < 0.08:
+				if distance !=0 :
 					yes_list.append(name)
+					print "yes list"
+					pprint (yes_list)
 				else:
 					no_list.append(name)
+					print "yes list"
 
-					#send_txt(theid, name + "You are "+str(distance)+ " apart from "+ leader)
+					#send_txt(theid, name + "You are "+str(distance)+ " apart from "+ Locus)
 					C=True
 				B=False	
 				time.sleep(1)
 
-			if len(yes_list)>2:
-				conclusion_text1="Thank you. As I understood "+'-'.join(yes_list)+" are staying together"+"Now, you have created your pack.\
-				 I put yours beside many others and make sure that everyone knows about all packs including you sharing this concern.\
-				And don't worry I remove all geolocation data from what you gave me and make sure no one can abuse your data."
-				conclusion_text2='-'.join(no_list)+". If possible, try to find and existing pack and join that one or initiate a new one.\
-				 My programmers believe there\
-				is a point on being physically together as long as it's not prevented. Try again, but don't give up."
-				send_txt(theid, name + "You are "+str(distance)+ " apart from "+ leader)
+			if len(yes_list)>3:
+
+				conclusion_text1="As I understood "+"\n"+' & '.join(yes_list)+" are staying together."
+				conclusion_text11="You have created your pack."
+				conclusion_text2="I put yours beside many others and make sure that everyone knows about all packs including you sharing this concern."
+				conclusion_text3=' & '.join(no_list)+".If possible, try to find an existing pack and join that one or initiate a new one."
+				
+				
+				send_txt(theid, conclusion_text1)
+				time.sleep(0.5)
+				send_txt(theid, conclusion_text11)
+				time.sleep(0.5)
+				send_txt(theid, conclusion_text2)
+				time.sleep(0.5)
+
+				#send_txt(theid, conclusion_text3)
 
 
 
