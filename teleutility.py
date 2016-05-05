@@ -44,10 +44,13 @@ def text(i):
     text=ast.literal_eval(json.dumps(text))
     return text
     
+def group_id(i):
+    gid=pack(i)['message']['chat']['id']
+    return gid
+
 
 def sender_id(i):
     idd=pack(i)['message']['from']['id']
-    
     return idd
 
 def message_id(i):
@@ -74,7 +77,7 @@ def send_txt(teleid, txt):
 def custom_keyboard(teleid,bool):
     if bool==1:
 
-        show_keyboard = {'keyboard': [["ICantBreath","BlackLivesMatter"], ['AmINext','RefugeesWelcome']]}
+        show_keyboard = {'keyboard': [["ICantBreath","BlackLivesMatter"],["Irhal","StopTheWar"], ['AmINext',"WhereIsMyVote?"],['RefugeesWelcome',"Occupy"]]}
         bot.sendMessage(teleid, 'This is the current concern list.', reply_markup=show_keyboard)
     elif bool==0:
         hide_keyboard = {'hide_keyboard': True}
@@ -141,6 +144,9 @@ if 'location' not in pack(-1)['message']:
     print "nabood"
 else:
     print "bood"
+
+
+#print group_id(-1)
 
 
 
